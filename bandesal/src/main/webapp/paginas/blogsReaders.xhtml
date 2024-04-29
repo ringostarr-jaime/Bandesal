@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit this template
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>BLOgs</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>  
+     <ui:composition template="plantilla.xhtml">           
+          <ui:define name="content">  
+       
+            <p:fieldset id="contenido">
+                <h:form id="formBlogsReaders" >
+                <p:growl id="msj" life="5000" showDetail="true" />
+                    <p:fieldset legend="Blogs Readers" >
+                        <h:panelGrid id="blogsReadersDatos" border="0"  columns="3" style="width: 500px">
+                            <h:panelGrid border="0" columns="2">
+                                
+                                 <p:outputLabel  value="Usuario"/>
+                                <p:inputText placeholder="Usuario"  value="#{blogsReadersBean.blogs.usuario}"  disabled="true"                                                
+                                            />
+                                <p:outputLabel  value="Titulo"/>
+                                <p:inputText  placeholder="Titulo" value="#{blogsReadersBean.blogs.titulo}"                                               
+                                             disabled="true"
+                                              />
+                                <p:outputLabel  value="Descripcion"/>
+                                <p:inputTextarea  rows="6" cols="33" value="#{blogsReadersBean.blogs.descripcion}"                                                   
+                                                 disabled="true"
+                                               />                                
+                            </h:panelGrid>  
+                        </h:panelGrid>
+
+                        
+                        <br></br>
+                        <p:commandButton id="save" update="msj" action="#{blogsReadersBean.guardarBlogsReaders()}" 
+                                         icon="pi pi-save" value="Guardar"                                                 
+                                         >
+                            <p:confirm header="Desea modificar al blog?" message="Esta seguro de realizar la operacion?" icon="ui-icon-info"/>
+                        </p:commandButton> 
+                          <p:outputLabel  value="  "/>
+                         <p:commandButton id="borrar" update="msj" action="#{blogsReadersBean.borrarBlogsReaders()}" 
+                                         icon="pi pi-save" value="Borrar asosiacion"                                                 
+                                         >
+                            <p:confirm header="Desea modificar al blog?" message="Esta seguro de realizar la operacion?" icon="ui-icon-info"/>
+                        </p:commandButton>  
+
+                    </p:fieldset>
+
+                    <br/>                   
+                </h:form>
+                <br/>                 
+            </p:fieldset>
+              
+              <p:fieldset id="contenido1">
+                <h:form id="formListarReaders" >               
+                    <br/>  
+                    <p:commandButton id="btnConsultar1"  value="Consultar Readers" actionListener="#{readersBean.listarReaders()}"  
+                                     icon="pi pi-search"
+                                     ajax="false" >  
+                    </p:commandButton>
+
+                    <p:blockUI block="contenido1" trigger="dt1 btnConsultar1"  >
+                        <p:graphicImage value="../imagenes/load3.gif"/>
+                    </p:blockUI>
+                    <br/>
+                    <br/>
+                    <p:dataTable id="dt1" value="#{readersBean.listaReaders}" 
+                                 editable="true"
+                                 var="dt1"
+                                 rows="2"
+                                 reflow="true"
+                                 paginator="true"                                
+                                 >
+                        <p:column headerText="Nombre" filterBy="#{dt1.name}" filterMatchMode="contains" styleClass="centeredColumnContent">                                          
+                            <p:outputLabel value="#{dt1.name}"></p:outputLabel>
+                        </p:column>                       
+                        
+                        <p:column  headerText="Selecionar Reader"  styleClass="centeredColumnContent">                           
+                            <p:commandButton value="Selecionar Reader" icon="pi pi-reply"  actionListener="#{blogsReadersBean.selecionarReader(dt1)}" 
+                                             update=":formBlogsReaders"/>                                                         
+                        </p:column>                          
+                    </p:dataTable>                    
+                </h:form>
+              </p:fieldset>
+              
+            
+            <p:fieldset id="contenido2">
+                <h:form id="formListarBlogs">               
+                    <br/>  
+                    <p:commandButton id="btnConsultar2"  value="Consultar Blogs" actionListener="#{blogsBean.listarBlogs()}"  
+                                     icon="pi pi-search"
+                                     ajax="false" >  
+                    </p:commandButton>
+
+                    <p:blockUI block="contenido2" trigger="dt2 btnConsultar2"  >
+                        <p:graphicImage value="../imagenes/load3.gif"/>
+                    </p:blockUI>
+                    <br/>
+                    <br/>
+                    <p:dataTable id="dt2" value="#{blogsBean.listaBlogs}" 
+                                 editable="true"
+                                 var="dt2"
+                                 rows="3"
+                                 reflow="true"
+                                 paginator="true"                                
+                                 >
+                        <p:column headerText="Titulo" filterBy="#{dt2.title}" filterMatchMode="contains" styleClass="centeredColumnContent">                                          
+                            <p:outputLabel value="#{dt2.title}"></p:outputLabel>
+                        </p:column>                           
+                        <p:column headerText="Descripcion" filterBy="#{dt2.description}" filterMatchMode="contains" styleClass="centeredColumnContent">                                          
+                            <p:outputLabel value="#{dt.description}"></p:outputLabel> 
+                        </p:column>     
+                        <p:column  headerText="Seleccionar Blog"  styleClass="centeredColumnContent">                           
+                            <p:commandButton value="Seleccionar Blog" 
+                                             icon="pi pi-reply"  
+                                             actionListener="#{blogsReadersBean.selecionarBlog(dt2)}" update=":formBlogsReaders"/>                                                            
+                        </p:column>                          
+                    </p:dataTable>
+                   
+                </h:form>               
+                 </p:fieldset>
+        
+              
+              
+              <p:fieldset id="contenido3">
+                <h:form id="formReadersBlogs" >               
+                    <br/>  
+                    <p:commandButton id="btnConsultar3"  value="Consultar Readers Blogs" actionListener="#{readersBean.listarReaders()}"  
+                                     icon="pi pi-search"
+                                     ajax="false" >  
+                    </p:commandButton>
+
+                    <p:blockUI block="contenido3" trigger="dt3 btnConsultar3"  >
+                        <p:graphicImage value="../imagenes/load3.gif"/>
+                    </p:blockUI>
+                    <br/>
+                    <br/>
+                    <p:dataTable id="dt3" value="#{readersBean.listaReaders}" 
+                                 editable="true"
+                                 var="dt3"
+                                 rows="2"
+                                 reflow="true"
+                                 paginator="true"                                
+                                 >
+                        <p:column headerText="Nombre" filterBy="#{dt1.name}" filterMatchMode="contains" styleClass="centeredColumnContent">                                          
+                            <p:outputLabel value="#{dt1.name}"></p:outputLabel>
+                        </p:column>                       
+                        
+                        <p:column  headerText="Selecionar Reader"  styleClass="centeredColumnContent">                           
+                            <p:commandButton value="Selecionar Reader" icon="pi pi-reply"  actionListener="#{blogsReadersBean.selecionarReader(dt1)}" 
+                                             update=":formBlogsReaders"/>                                                         
+                        </p:column>                          
+                    </p:dataTable>                    
+                </h:form>
+              </p:fieldset>
+              
+             
+           </ui:define>
+        </ui:composition>  
+ 
+</html>

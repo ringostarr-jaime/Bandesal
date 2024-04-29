@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <h:head>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <title>BLOGs</title>
+        <link href="css/estiloLogin.css" rel="stylesheet" type="text/css"/>         
+        <style type="text/css">          
+            html {
+                background: url(imagenes/fondo1.jpeg) no-repeat center center fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+                overflow: hidden;
+            }
+        </style>          
+    </h:head>
+    <h:body id="bodyUsuarios" >  
+        <div id="container">
+            <h1 class="h1">Inicio de sesion</h1>
+            <h:form id="formUsuarios">
+                <p:growl life="800" showDetail="true" ></p:growl>                               
+                <p:inputText class="input" id="user" placeholder="Usuario" value="#{loginBean.usuario.usuario}" required="true" requiredMessage="El campo usuario es requerido"/>
+                
+                <p:password class="input" id="pass"  placeholder="Clave" value="#{loginBean.usuario.clave}"                             
+                            required="true" requiredMessage="El campo clave es requerido"/>               
+                <br/>
+                <p:commandButton class="a"  id="btnIngresar"  update="formUsuarios" value="Ingresar" icon="pi pi-key" action="#{loginBean.iniciarSession()}"></p:commandButton>                
+                <br/>
+                <div style="background: #00000096">
+                    <p:outputLabel style="color: red" value="#{loginBean.errorConexion}" rendered="#{loginBean.errorConexion!=''}"/>
+                </div>
+                <p:blockUI block="formUsuarios" trigger="btnIngresar">
+                    <p:graphicImage value="imagenes/load3.gif"/>
+                </p:blockUI>
+            </h:form>  
+        </div>
+    </h:body>
+</html>

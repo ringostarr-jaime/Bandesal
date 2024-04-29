@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit this template
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>BLOgs</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>  
+     <ui:composition template="plantilla.xhtml">           
+          <ui:define name="content">  
+       
+            <p:fieldset id="contenido">
+                <h:form id="formBlogs" >
+                <p:growl id="msj" life="5000" showDetail="true" />
+                    <p:fieldset legend="Blogs" >
+                        <h:panelGrid id="blogsDatos" border="0"  columns="3" style="width: 500px">
+                            <h:panelGrid border="0" columns="2">
+
+                                <p:outputLabel for="txtTitle" value="Titulo"/>
+                                <p:inputText id="txtTitle" placeholder="Titulo" value="#{blogsBean.blogs.title}"  
+                                             required="true" requiredMessage="El campo blog es requerido"  maxlength="50"/>
+
+                                <p:outputLabel for="txtDesc" value="Descripcion"/>
+                                <p:inputTextarea id="txtDesc"  rows="6" cols="33" value="#{blogsBean.blogs.description}"  
+                                             required="true" requiredMessage="El campo blog es requerido"  maxlength="4000"/>
+
+                            </h:panelGrid>  
+
+                        </h:panelGrid>
+
+                        <br></br>
+                        <p:commandButton id="save" update="msj" action="#{blogsBean.guardarBlogs()}" 
+                                         icon="pi pi-save" value="Guardar"                                                 
+                                         >
+                            <p:confirm header="Desea modificar al blog?" message="Esta seguro de realizar la operacion?" icon="ui-icon-info"/>
+                        </p:commandButton>                               
+
+                    </p:fieldset>
+
+                    <br/>                   
+                </h:form>
+                <br/>                 
+            </p:fieldset>
+            
+            <p:fieldset id="contenido2">
+                <h:form id="formListarBlogs">               
+                    <br/>  
+                    <p:commandButton id="btnConsultar"  value="Consultar todos" actionListener="#{blogsBean.listarBlogs()}"  
+                                     icon="pi pi-search"
+                                     ajax="false" >  
+                    </p:commandButton>
+
+                    <p:blockUI block="contenido2" trigger="dt btnConsultar"  >
+                        <p:graphicImage value="../imagenes/load3.gif"/>
+                    </p:blockUI>
+                    <br/>
+                    <br/>
+                    <p:dataTable id="dt" value="#{blogsBean.listaBlogs}" 
+                                 editable="true"
+                                 var="dt"
+                                 rows="3"
+                                 reflow="true"
+                                 paginator="true"                                
+                                 >
+                        <p:column headerText="Titulo" filterBy="#{dt.title}" filterMatchMode="contains" styleClass="centeredColumnContent">                                          
+                            <p:outputLabel value="#{dt.title}"></p:outputLabel>
+                        </p:column>                           
+                        <p:column headerText="Descripcion" filterBy="#{dt.description}" filterMatchMode="contains" styleClass="centeredColumnContent">                                          
+                            <p:outputLabel value="#{dt.description}"></p:outputLabel> 
+                        </p:column>     
+                        <p:column  headerText="Modificar /Eliminar"  styleClass="centeredColumnContent">                           
+                            <p:commandButton value="Modificar" icon="pi pi-user-edit"  oncomplete="PF('wdlgDatos').show();" actionListener="#{blogsBean.objectModificar(dt)}" update="dlgDatos"/>
+                            <p:outputLabel value="    "></p:outputLabel> 
+                            <p:commandButton id="btnEliminar" value="   Eliminar"  actionListener="#{blogsBean.eliminarObject(dt)}" 
+                                             style="width: 140px; height: 40px"
+                                             icon="pi pi-trash"                                                     
+                                           update="dt" >
+                                <p:confirm header="Desea eliminar al blog?" message="Esta seguro de realizar la operacion?" icon="pi pi-info-circle"/>                                    
+                            </p:commandButton>                                    
+                        </p:column>                          
+                    </p:dataTable>
+
+                    <div class="card"> 
+                        <p:growl id="message" showDetail="true"/>                        
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                            <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                            <p:commandButton value="Aceptar" type="button" styleClass="ui-confirmdialog-yes" />
+                        </p:confirmDialog>   
+
+                          </div>
+                </h:form>
+                
+                <p:dialog header="Datos" widgetVar="wdlgDatos" id="dlgDatos" showEffect="explode" hideEffect="explode">
+                 
+                    <div style="width: 900px;" align="center">
+                    <h:form>
+                        <p:outputLabel value="Titulo     "/>      
+                        <p:inputText value="#{blogsBean.blogsEntity.title}" required="true" requiredMessage="El campo titulo es requerido"  maxlength="50"/>
+                        <br></br><br></br>
+                        <p:outputLabel value="Descripcion    "/>
+                         <p:inputTextarea  rows="6" cols="33" value="#{blogsBean.blogsEntity.description}" required="true" requiredMessage="El campo descripcion es requerido"  maxlength="4000"/>
+                        <br></br><br></br>
+                        <p:commandButton id="btnModificar" value="Modificar"
+                                             icon="pi pi-pencil" 
+                                             style="width: 140px; height: 40px"
+                                            actionListener="#{blogsBean.modificarObject()}" 
+                                             update="formListarBlogs"  
+                                             oncomplete="PF('wdlgDatos').hide();"
+                                             >                                                                           
+                            </p:commandButton>  
+                          <p:outputLabel value="    "></p:outputLabel> 
+                        <p:commandButton value="Cancelar"  icon="pi pi-times"   immediate="true" oncomplete="PF('wdlgDatos').hide();"/>            
+                    </h:form>     
+                        </div>
+                </p:dialog> 
+                 </p:fieldset>
+        
+             
+           </ui:define>
+        </ui:composition>  
+ 
+</html>

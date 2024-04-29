@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit this template
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"      
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>BLOgs readers</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>       
+    </h:head>  
+    
+     <ui:composition template="plantilla.xhtml">           
+          <ui:define name="content">  
+                   
+        <div align="center" class="card">    
+             <h:panelGrid columns="1" style="width:100%" border="1"
+                          >                                  
+            <p:fieldset id="contenido">
+                <h:form id="formReaders" >
+                <p:growl id="msj" life="5000" showDetail="true" />
+                    <p:fieldset legend="Readers" >
+                        <h:panelGrid id="readersDatos" border="0"  columns="3" style="width: 500px">
+                            <h:panelGrid border="0" columns="2">
+
+                                <p:outputLabel for="txtTitle" value="Nombre"/>
+                                <p:inputText id="txtTitle" placeholder="Nombre" value="#{readersBean.readers.name}"  
+                                             required="true" requiredMessage="El campo nombre es requerido"  maxlength="8"/>
+                            </h:panelGrid>  
+
+                        </h:panelGrid>
+
+                        <br></br>
+                        <p:commandButton id="save" update="msj" action="#{readersBean.guardarReaders()}" 
+                                         icon="pi pi-save" value="Guardar"                                                 
+                                         >
+                            <p:confirm header="Desea modificar al reader?" message="Esta seguro de realizar la operacion?" icon="ui-icon-info"/>
+                        </p:commandButton>                               
+
+                    </p:fieldset>
+
+                    <br/>                   
+                </h:form>
+                <br/>                 
+            </p:fieldset>
+            
+            <p:fieldset id="contenido2">
+                <h:form id="formListarReaders" >               
+                    <br/>  
+                    <p:commandButton id="btnConsultar"  value="Consultar todos" actionListener="#{readersBean.listarReaders()}"  
+                                     icon="pi pi-search"
+                                     ajax="false" >  
+                    </p:commandButton>
+
+                    <p:blockUI block="contenido2" trigger="dt btnConsultar"  >
+                        <p:graphicImage value="../imagenes/load3.gif"/>
+                    </p:blockUI>
+                    <br/>
+                    <br/>
+                    <p:dataTable id="dt" value="#{readersBean.listaReaders}" 
+                                 editable="true"
+                                 var="dt"
+                                 rows="2"
+                                 reflow="true"
+                                 paginator="true"                                
+                                 >
+                        <p:column headerText="Nombre" filterBy="#{dt.name}" filterMatchMode="contains" styleClass="centeredColumnContent">                                          
+                            <p:outputLabel value="#{dt.name}"></p:outputLabel>
+                        </p:column>                       
+                        
+                        <p:column  headerText="Modificar /Eliminar"  styleClass="centeredColumnContent">                           
+                            <p:commandButton value="Modificar" icon="pi pi-user-edit"  oncomplete="PF('wdlgDatos').show();" actionListener="#{readersBean.objectModificar(dt)}" update="dlgDatos"/>
+                            <p:outputLabel value="    "></p:outputLabel> 
+                            <p:commandButton id="btnEliminar" value="   Eliminar"  actionListener="#{readersBean.eliminarObject(dt)}" 
+                                             style="width: 140px; height: 40px"
+                                             icon="pi pi-trash"                                                     
+                                           update="dt" >
+                                <p:confirm header="Desea eliminar al reader?" message="Esta seguro de realizar la operacion?" icon="pi pi-info-circle"/>                                    
+                            </p:commandButton>                                    
+                        </p:column>                          
+                    </p:dataTable>
+
+                    <div class="card"> 
+                        <p:growl id="message" showDetail="true"/>                        
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                            <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                            <p:commandButton value="Aceptar" type="button" styleClass="ui-confirmdialog-yes" />
+                        </p:confirmDialog>   
+
+                          </div>
+                </h:form>
+                
+                <p:dialog header="Datos" widgetVar="wdlgDatos" id="dlgDatos" showEffect="explode" hideEffect="explode">
+                 
+                    <div style="width: 900px;" align="center">
+                    <h:form>
+                        <p:outputLabel value="Nombre     "/>      
+                        <p:inputText value="#{readersBean.readersEntity.name}" required="true" requiredMessage="El campo nombre es requerido"  maxlength="8"/>                       
+                        <br></br><br></br>
+                        <p:commandButton id="btnModificar" value="Modificar"
+                                             icon="pi pi-pencil" 
+                                             style="width: 140px; height: 40px"
+                                            actionListener="#{readersBean.modificarObject()}" 
+                                             update="formListarReaders"  
+                                             oncomplete="PF('wdlgDatos').hide();"
+                                             >                                                                           
+                            </p:commandButton>  
+                          <p:outputLabel value="    "></p:outputLabel> 
+                        <p:commandButton value="Cancelar"  icon="pi pi-times"   immediate="true" oncomplete="PF('wdlgDatos').hide();"/>            
+                    </h:form>     
+                        </div>
+                </p:dialog> 
+                 </p:fieldset>
+                  </h:panelGrid>
+        </div>      
+           
+           </ui:define>
+        </ui:composition>   
+ 
+</html>
